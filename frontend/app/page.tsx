@@ -28,6 +28,8 @@ import { useState } from "react";
 export default function Home() {
   const [isPassword, setIsPassword] = useState<string>("password");
   const [displaySvg, setdisplaySvg] = useState<string>("/see-pass.svg");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   function changeInputType() {
     if (isPassword == "password") {
       setIsPassword("text");
@@ -35,6 +37,26 @@ export default function Home() {
     } else {
       setIsPassword("password");
       setdisplaySvg("/see-pass.svg");
+    }
+  }
+
+  async function submitLogin(event: any) {
+    event.preventDefault();
+    const formData = { username, password };
+    const loginURL = process.env.NEXT_PUBLIC_URL;
+    console.log(typeof formData);
+    console.log(typeof loginURL);
+
+    try {
+      const response = await fetch(loginURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const text = response.body;
+      console.log(text);
+    } catch {
+      console.log("There was an error");
     }
   }
   return (
@@ -48,7 +70,7 @@ export default function Home() {
             Enter your username and password below to access your account.
           </p>
         </div>
-        <form className="space-y-6" action="#" method="GET">
+        <form className="space-y-6">
           <div>
             <Label htmlFor="username" className="sr-only">
               Username
@@ -57,7 +79,9 @@ export default function Home() {
               id="username"
               name="username"
               type="text"
+              value={username}
               autoComplete="username"
+              onChange={(e) => setUsername(e.target.value)}
               required
               className="relative block w-full appearance-none rounded-md border border-input bg-background px-3 py-2 text-primary placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
               placeholder="Username"
@@ -70,8 +94,10 @@ export default function Home() {
             <Input
               id="password"
               name="password"
+              value={password}
               type={isPassword}
               autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
               required
               className="relative w-full appearance-none rounded-md border border-input bg-background px-3 py-2 text-primary placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-none focus:ring-primary sm:text-sm"
               placeholder="Password"
@@ -81,11 +107,11 @@ export default function Home() {
               src={displaySvg}
               width={20}
               height={20}
-              alt="see-pass.svg"
+              alt="hide/see-pass.svg"
             />
           </div>
           <div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" onClick={submitLogin}>
               Sign in
             </Button>
           </div>
