@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/craniacshencil/medal-poll/backend/pkg/myTypes"
+	"github.com/craniacshencil/medal-poll/backend/internal/myTypes"
+	"github.com/craniacshencil/medal-poll/backend/utils"
 )
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -13,10 +14,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		log.Println("While readin user-details")
-		w.Header().Add("error", err.Error())
-		w.WriteHeader(http.StatusBadRequest)
+		utils.WriteJSON(w, http.StatusBadRequest, err.Error())
+		return
 	}
 	log.Println(user)
-	w.Header().Add("message", "success")
-	w.WriteHeader(http.StatusOK)
+	utils.WriteJSON(w, http.StatusFound, "user found")
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/craniacshencil/medal-poll/backend/pkg/handlers"
+	"github.com/craniacshencil/medal-poll/backend/utils"
 	"github.com/rs/cors"
 )
 
@@ -36,6 +37,5 @@ func main() {
 
 func simplePing(w http.ResponseWriter, r *http.Request) {
 	log.Println("Hello from the server")
-	w.Header().Add("message", "success")
-	w.WriteHeader(http.StatusOK)
+	utils.WriteJSON(w, http.StatusOK, "Hello from the server")
 }
