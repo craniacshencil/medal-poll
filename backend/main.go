@@ -1,29 +1,27 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/craniacshencil/medal-poll/backend/pkg/handlers"
 	"github.com/rs/cors"
 )
-
-type User struct {
-	Username string
-	Password string
-}
 
 func main() {
 	router := http.NewServeMux()
 	router.HandleFunc("GET /", simplePing)
-	router.HandleFunc("POST /login", loginHandler)
+	router.HandleFunc("POST /login", handlers.LoginHandler)
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"localhost:3000"},
+		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodDelete},
 		AllowCredentials: true,
+		AllowedHeaders:   []string{"*"},
+		ExposedHeaders:   []string{"Content-Length"},
 	})
+
 	corsEnabledRouter := c.Handler(router)
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", 8080),
@@ -38,19 +36,6 @@ func main() {
 
 func simplePing(w http.ResponseWriter, r *http.Request) {
 	log.Println("Hello from the server")
-	w.Header().Add("message", "success")
-	w.WriteHeader(http.StatusOK)
-}
-
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	var user User
-	err := json.NewDecoder(r.Body).Decode(&user)
-	if err != nil {
-		log.Println("While readin user-details")
-		w.Header().Add("error", err.Error())
-		w.WriteHeader(http.StatusBadRequest)
-	}
-	log.Println(user)
 	w.Header().Add("message", "success")
 	w.WriteHeader(http.StatusOK)
 }
