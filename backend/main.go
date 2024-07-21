@@ -12,8 +12,13 @@ import (
 
 func main() {
 	router := http.NewServeMux()
+	apiHandler, err := handlers.SetupDb()
+	if err != nil {
+		log.Println("error while setting up the apiHandler")
+		return
+	}
 	router.HandleFunc("GET /", simplePing)
-	router.HandleFunc("POST /login", handlers.LoginHandler)
+	router.HandleFunc("POST /login", apiHandler.LoginHandler)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},
@@ -29,7 +34,7 @@ func main() {
 		Handler: corsEnabledRouter,
 	}
 
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil {
 		log.Fatal("There was an error starting the server")
 	}

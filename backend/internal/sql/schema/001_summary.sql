@@ -2,7 +2,7 @@
 CREATE TABLE summary (
   username TEXT PRIMARY KEY,
   password TEXT UNIQUE NOT NULL,
-  responded BOOLEAN DEFAULT false,
+  responded BOOLEAN NOT NULL DEFAULT false,
   gold TEXT DEFAULT NULL,
   silver TEXT DEFAULT NULL,
   bronze TEXT DEFAULT NULL
