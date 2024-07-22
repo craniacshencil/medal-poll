@@ -26,6 +26,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Inter } from "next/font/google";
+import { useRouter } from "next/navigation";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -44,6 +45,7 @@ interface LoginResponse {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [isPassword, setIsPassword] = useState<string>("password");
   const [displaySvg, setdisplaySvg] = useState<string>("/see-pass.svg");
   const [username, setUsername] = useState<string>("");
@@ -60,22 +62,27 @@ export default function Home() {
 
   /**
    *This function is used to display toasts when login is successful
+   *It also redirects you to the designated page
    */
   function loginSuccessful(data: LoginResponse) {
-    if (data.redirect == "polling")
+    if (data.redirect == "polling") {
       toast(
         <div className={inter.className + "px-4"}>
           <strong className="text-base">Hey {data.username}</strong>
           <p>Choose wisely!</p>
         </div>,
       );
-    else
+    } else {
       toast(
         <div className={inter.className + "px-4"}>
           <strong className="text-base">Welcome {data.username}</strong>
           <p>Hey, you're here again?</p>
         </div>,
       );
+    }
+    setTimeout(() => {
+      router.push(`/${data.redirect}`);
+    }, 800);
   }
 
   /**
@@ -121,7 +128,8 @@ export default function Home() {
         const data: LoginResponse = await response.json();
         loginSuccessful(data);
       }
-    } catch {
+    } catch (err) {
+      console.log(err);
       toast(
         <div className={inter.className + "px-4"}>
           <strong className="text-base">Server Error</strong>
