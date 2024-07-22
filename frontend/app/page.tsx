@@ -24,6 +24,24 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Inter } from "next/font/google";
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
+
+interface FormData {
+  username: string;
+  password: string;
+}
+
+interface LoginResponse {
+  username: string;
+  password: string;
+  message: string;
+  redirect: string;
+}
 
 export default function Home() {
   const [isPassword, setIsPassword] = useState<string>("password");
@@ -40,23 +58,76 @@ export default function Home() {
     }
   }
 
-  async function submitLogin(event: any) {
+  /**
+   *This function is used to display toasts when login is successful
+   */
+  function loginSuccessful(data: LoginResponse) {
+    if (data.redirect == "polling")
+      toast(
+        <div className={inter.className + "px-4"}>
+          <strong className="text-base">Hey {data.username}</strong>
+          <p>Choose wisely!</p>
+        </div>,
+      );
+    else
+      toast(
+        <div className={inter.className + "px-4"}>
+          <strong className="text-base">Welcome {data.username}</strong>
+          <p>Hey, you're here again?</p>
+        </div>,
+      );
+  }
+
+  /**
+   *This function is used to display toasts when login fails
+   */
+  function loginFailed(statusCode: number) {
+    if (statusCode == 404)
+      toast(
+        <div className={inter.className + "px-4"}>
+          <strong className="text-base">Incorrect Username</strong>
+          <p>Enter valid username</p>
+        </div>,
+      );
+    else
+      toast(
+        <div className={inter.className + "px-4"}>
+          <strong className="text-base">Incorrect Password</strong>
+          <p>Check your password</p>
+        </div>,
+      );
+  }
+
+  /**
+   *This function submits login data to the backend.
+   *Also receives response and reacts accordingly
+   */
+  async function submitLogin(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
-    const formData = { username, password };
-    const loginURL = process.env.NEXT_PUBLIC_URL;
-    console.log(typeof formData);
-    console.log(typeof loginURL);
+    const formData: FormData = { username, password };
+    const loginURL: string = process.env.NEXT_PUBLIC_URL as string;
 
     try {
-      const response = await fetch(loginURL, {
+      const response: Response = await fetch(loginURL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      const text = response.body;
-      console.log(text);
+
+      const statusCode: number = response.status;
+      if (statusCode >= 400) {
+        loginFailed(statusCode);
+      } else {
+        const data: LoginResponse = await response.json();
+        loginSuccessful(data);
+      }
     } catch {
-      console.log("There was an error");
+      toast(
+        <div className={inter.className + "px-4"}>
+          <strong className="text-base">Server Error</strong>
+          <p>Oops! something went wrong</p>
+        </div>,
+      );
     }
   }
   return (
