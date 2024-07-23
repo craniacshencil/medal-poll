@@ -27,14 +27,15 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
+import { storeCredentials } from "./actions";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
 
-interface FormData {
-  username: string;
-  password: string;
+export interface FormData {
+  username: string | undefined;
+  password: string | undefined;
 }
 
 interface LoginResponse {
@@ -80,6 +81,8 @@ export default function Home() {
         </div>,
       );
     }
+
+    storeCredentials(data.username, data.password);
     setTimeout(() => {
       router.push(`/${data.redirect}`);
     }, 800);
