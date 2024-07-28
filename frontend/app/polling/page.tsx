@@ -1,8 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Inter } from "next/font/google";
-import MyCard from "@/components/ui/mycard";
+import MyCard from "@/components/mycard";
 import { useState } from "react";
+import Help from "@/components/help";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -70,7 +71,7 @@ export default function Polling() {
         <h1 className={`${inter.className} text-5xl font-extrabold mb-3`}>
           Make your choices here
         </h1>
-        <Button className="max-w-xs text-xl">Learn more</Button>
+        <Help />
         <ul className="w-full">{cardItems}</ul>
       </section>
     </div>

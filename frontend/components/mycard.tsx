@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "./button";
+import { Button } from "@/components/ui/button";
 
 // Props to be passed
 interface myCardProps {
