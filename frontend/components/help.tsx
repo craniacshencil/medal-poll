@@ -16,7 +16,7 @@ const Help: React.FC = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-2xl">How does this work?</DialogTitle>
+          <DialogTitle className="text-3xl">How does this work?</DialogTitle>
           <DialogDescription className="text-md">
             Each card here represents an idea put forward by the members. You
             can award 3 ideas a medal including gold, silver and bronze

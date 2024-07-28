@@ -1,15 +1,15 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Inter } from "next/font/google";
 import MyCard from "@/components/mycard";
 import { useState } from "react";
 import Help from "@/components/help";
+import Leaderboard from "@/components/leaderboard";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
 
-interface keyValue {
+export interface keyValue {
   key: number;
   value: string;
 }
@@ -60,13 +60,18 @@ export default function Polling() {
         toggleMedal={toggleMedal}
         title={item.value}
         itemNo={item.key}
-        className="bg-yellow-300"
       />
     </li>
   ));
 
   return (
     <div className="m-10 flex justify-center">
+      <Leaderboard
+        goldIndex={goldIndex}
+        silverIndex={silverIndex}
+        bronzeIndex={bronzeIndex}
+        names={choices}
+      />
       <section className="flex items-center flex-col w-2/3 mt-20 m-5 gap-3">
         <h1 className={`${inter.className} text-5xl font-extrabold mb-3`}>
           Make your choices here
