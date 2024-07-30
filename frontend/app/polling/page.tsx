@@ -103,6 +103,7 @@ export default function Polling() {
     try {
       const response: Response = await fetch(pollURL, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(polldata),
       });
