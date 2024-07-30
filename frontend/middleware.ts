@@ -6,7 +6,7 @@ export default async function validateCredentials(request: NextRequest) {
   const password = request.cookies.get("password")?.value;
 
   const formData: FormData = { username, password };
-  const loginURL: string = process.env.NEXT_PUBLIC_URL as string;
+  const loginURL: string = process.env.NEXT_PUBLIC_LOGIN as string;
 
   try {
     const response: Response = await fetch(loginURL, {

@@ -115,7 +115,7 @@ export default function Home() {
   async function submitLogin(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     const formData: FormData = { username, password };
-    const loginURL: string = process.env.NEXT_PUBLIC_URL as string;
+    const loginURL: string = process.env.NEXT_PUBLIC_LOGIN as string;
 
     try {
       const response: Response = await fetch(loginURL, {

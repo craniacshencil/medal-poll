@@ -21,6 +21,11 @@ interface validationResult {
   missingMedal: string | null;
 }
 
+interface pollData {
+  choices: keyValue[];
+  medals: keyValue[];
+}
+
 export default function Polling() {
   //All the possible choices that users have
   const choices: keyValue[] = [
@@ -70,7 +75,8 @@ export default function Polling() {
     return { success: true, missingMedal: null };
   }
 
-  function submitMedals() {
+  async function submitMedals(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
     const result: validationResult = validateMedals();
     // validation failed
     if (!result.success) {
@@ -86,6 +92,25 @@ export default function Polling() {
     }
 
     //validation successful
+    const pollURL: string = process.env.NEXT_PUBLIC_POLL as string;
+    const medals: keyValue[] = [
+      choices[goldIndex],
+      choices[silverIndex],
+      choices[bronzeIndex],
+    ];
+    const polldata: pollData = { choices, medals };
+    console.log(polldata);
+    try {
+      const response: Response = await fetch(pollURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(polldata),
+      });
+      const data = await response.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const cardItems = choices.map((item) => (

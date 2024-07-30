@@ -19,6 +19,7 @@ func main() {
 	}
 	router.HandleFunc("GET /", simplePing)
 	router.HandleFunc("POST /login", apiHandler.LoginHandler)
+	router.HandleFunc("POST /polling", apiHandler.PollingHandler)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},
