@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 )
 
 const getUser = `-- name: GetUser :one
@@ -25,5 +26,40 @@ func (q *Queries) GetUser(ctx context.Context, username string) (GetUserRow, err
 	row := q.db.QueryRowContext(ctx, getUser, username)
 	var i GetUserRow
 	err := row.Scan(&i.Username, &i.Password, &i.Responded)
+	return i, err
+}
+
+const updateMedals = `-- name: UpdateMedals :one
+UPDATE summary 
+SET responded=$1, gold=$2, silver=$3, bronze=$4 
+WHERE username=$5
+RETURNING username, password, responded, gold, silver, bronze
+`
+
+type UpdateMedalsParams struct {
+	Responded bool
+	Gold      sql.NullString
+	Silver    sql.NullString
+	Bronze    sql.NullString
+	Username  string
+}
+
+func (q *Queries) UpdateMedals(ctx context.Context, arg UpdateMedalsParams) (Summary, error) {
+	row := q.db.QueryRowContext(ctx, updateMedals,
+		arg.Responded,
+		arg.Gold,
+		arg.Silver,
+		arg.Bronze,
+		arg.Username,
+	)
+	var i Summary
+	err := row.Scan(
+		&i.Username,
+		&i.Password,
+		&i.Responded,
+		&i.Gold,
+		&i.Silver,
+		&i.Bronze,
+	)
 	return i, err
 }

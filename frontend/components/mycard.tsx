@@ -26,7 +26,6 @@ const MyCard: React.FC<myCardProps> = ({
 
   // Create function because tailwind classes where not being rendered by shadcn
   function setBg() {
-    if (itemNo == 0) console.log(goldIndex, silverIndex, bronzeIndex);
     if (goldIndex == itemNo) {
       return "#FDE047";
     } else if (silverIndex == itemNo) {
