@@ -20,7 +20,7 @@ const Leaderboard: React.FC<leaderboardProps> = ({
 }) => {
   let goldName = "NaN";
   let silverName = "NaN";
-  let bronzeName = "Nan";
+  let bronzeName = "NaN";
   if (goldIndex != -1) goldName = names[goldIndex].value;
   if (silverIndex != -1) silverName = names[silverIndex].value;
   if (bronzeIndex != -1) bronzeName = names[bronzeIndex].value;

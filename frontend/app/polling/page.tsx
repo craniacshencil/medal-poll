@@ -4,6 +4,8 @@ import MyCard from "@/components/mycard";
 import { useState } from "react";
 import Help from "@/components/help";
 import Leaderboard from "@/components/leaderboard";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -12,6 +14,11 @@ const inter = Inter({
 export interface keyValue {
   key: number;
   value: string;
+}
+
+interface validationResult {
+  success: boolean;
+  missingMedal: string | null;
 }
 
 export default function Polling() {
@@ -51,6 +58,36 @@ export default function Polling() {
     }
   }
 
+  // Validation function checking whether all medals have been submitted
+  function validateMedals(): validationResult {
+    if (goldIndex == -1) {
+      return { success: false, missingMedal: "Gold" };
+    } else if (silverIndex == -1) {
+      return { success: false, missingMedal: "Silver" };
+    } else if (bronzeIndex == -1) {
+      return { success: false, missingMedal: "Bronze" };
+    }
+    return { success: true, missingMedal: null };
+  }
+
+  function submitMedals() {
+    const result: validationResult = validateMedals();
+    // validation failed
+    if (!result.success) {
+      toast(
+        <div className={inter.className + "px-4"}>
+          <strong className="text-base">
+            {result.missingMedal} medal missing!
+          </strong>
+          <p>Please assign your {result.missingMedal} medal</p>
+        </div>,
+      );
+      return;
+    }
+
+    //validation successful
+  }
+
   const cardItems = choices.map((item) => (
     <li key={item.key}>
       <MyCard
@@ -65,20 +102,30 @@ export default function Polling() {
   ));
 
   return (
-    <div className="m-10 flex justify-center">
-      <Leaderboard
-        goldIndex={goldIndex}
-        silverIndex={silverIndex}
-        bronzeIndex={bronzeIndex}
-        names={choices}
-      />
-      <section className="flex items-center flex-col w-2/3 mt-20 m-5 gap-3">
-        <h1 className={`${inter.className} text-5xl font-extrabold mb-3`}>
-          Make your choices here
-        </h1>
-        <Help />
-        <ul className="w-full">{cardItems}</ul>
-      </section>
+    <div>
+      <div className="m-10 flex justify-center">
+        <Leaderboard
+          goldIndex={goldIndex}
+          silverIndex={silverIndex}
+          bronzeIndex={bronzeIndex}
+          names={choices}
+        />
+        <section className="flex items-center flex-col w-2/3 mt-20 m-5 mb-2 gap-3">
+          <h1 className={`${inter.className} text-5xl font-extrabold mb-3`}>
+            Make your choices here
+          </h1>
+          <Help />
+          <ul className="w-full">{cardItems}</ul>
+        </section>
+      </div>
+      <div className="text-center">
+        <Button
+          onClick={submitMedals}
+          className="text-xl font-semibold mb-20 p-5 px-10"
+        >
+          Submit
+        </Button>
+      </div>
     </div>
   );
 }
