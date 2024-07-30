@@ -12,7 +12,7 @@ func (apiHandler *ApiHandler) PollingHandler(w http.ResponseWriter, r *http.Requ
 	err := apiHandler.ValidateUser(r)
 	if err != nil {
 		log.Println("ERR:", err)
-		utils.WriteJSON(w, http.StatusUnauthorized, err.Error())
+		utils.WriteJSON(w, http.StatusUnauthorized, map[string]string{"error": err.Error()})
 		return
 	}
 	var pollData myTypes.PollData

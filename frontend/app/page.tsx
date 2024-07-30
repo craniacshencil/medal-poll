@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { storeCredentials } from "./actions";
+import { createToast } from "./polling/page";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -66,22 +67,14 @@ export default function Home() {
    *It also redirects you to the designated page
    */
   function loginSuccessful(data: LoginResponse) {
+    // Create toasts according to redirect
     if (data.redirect == "polling") {
-      toast(
-        <div className={inter.className + "px-4"}>
-          <strong className="text-base">Hey {data.username}</strong>
-          <p>Choose wisely!</p>
-        </div>,
-      );
+      createToast(`Hey ${data.username}`, "Choose wisely!");
     } else {
-      toast(
-        <div className={inter.className + "px-4"}>
-          <strong className="text-base">Welcome {data.username}</strong>
-          <p>Hey, you're here again?</p>
-        </div>,
-      );
+      createToast(`Welcome ${data.username}`, "Hey, you're here again?");
     }
 
+    // Store in cookies and redirect
     storeCredentials(data.username, data.password);
     setTimeout(() => {
       router.push(`/${data.redirect}`);
@@ -92,20 +85,11 @@ export default function Home() {
    *This function is used to display toasts when login fails
    */
   function loginFailed(statusCode: number) {
-    if (statusCode == 404)
-      toast(
-        <div className={inter.className + "px-4"}>
-          <strong className="text-base">Incorrect Username</strong>
-          <p>Enter valid username</p>
-        </div>,
-      );
-    else
-      toast(
-        <div className={inter.className + "px-4"}>
-          <strong className="text-base">Incorrect Password</strong>
-          <p>Check your password</p>
-        </div>,
-      );
+    if (statusCode == 404) {
+      createToast("Incorrect Username", "Enter valid username");
+    } else {
+      createToast("Incorrect Password", "Check your password");
+    }
   }
 
   /**
@@ -132,13 +116,7 @@ export default function Home() {
         loginSuccessful(data);
       }
     } catch (err) {
-      console.log(err);
-      toast(
-        <div className={inter.className + "px-4"}>
-          <strong className="text-base">Server Error</strong>
-          <p>Oops! something went wrong</p>
-        </div>,
-      );
+      createToast("Server Error", "Oops! Something went wrong");
     }
   }
   return (

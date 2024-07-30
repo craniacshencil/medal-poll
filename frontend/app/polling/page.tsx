@@ -26,6 +26,14 @@ interface pollData {
   medals: keyValue[];
 }
 
+export function createToast(title: string, message: string) {
+  toast(
+    <div className={inter.className + "px-4"}>
+      <strong className="text-base">{title}</strong>
+      <p>{message}</p>
+    </div>,
+  );
+}
 export default function Polling() {
   //All the possible choices that users have
   const choices: keyValue[] = [
@@ -45,7 +53,9 @@ export default function Polling() {
   const [silverIndex, setSilverIndex] = useState(-1);
   const [bronzeIndex, setBronzeIndex] = useState(-1);
 
-  // Assgin index whenever medal is given to a choice
+  /**
+   *Update index whenever medal is assigned to a choice
+   */
   function toggleMedal(medal: "gold" | "silver" | "bronze", idx: number): void {
     if (medal == "gold") {
       // reset other medals if current idx already had a medal assigned
@@ -63,7 +73,9 @@ export default function Polling() {
     }
   }
 
-  // Validation function checking whether all medals have been submitted
+  /**
+   *Validation function checking whether all medals have been submitted
+   */
   function validateMedals(): validationResult {
     if (goldIndex == -1) {
       return { success: false, missingMedal: "Gold" };
@@ -75,18 +87,17 @@ export default function Polling() {
     return { success: true, missingMedal: null };
   }
 
+  /**
+   *Submits the medal allocation to the backend for processing and displays valid output to the end-user
+   */
   async function submitMedals(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
     const result: validationResult = validateMedals();
     // validation failed
     if (!result.success) {
-      toast(
-        <div className={inter.className + "px-4"}>
-          <strong className="text-base">
-            {result.missingMedal} medal missing!
-          </strong>
-          <p>Please assign your {result.missingMedal} medal</p>
-        </div>,
+      createToast(
+        `${result.missingMedal} is missing`,
+        `Please assign your ${result.missingMedal} medal`,
       );
       return;
     }
@@ -99,7 +110,7 @@ export default function Polling() {
       choices[bronzeIndex],
     ];
     const polldata: pollData = { choices, medals };
-    console.log(polldata);
+
     try {
       const response: Response = await fetch(pollURL, {
         method: "POST",
@@ -108,9 +119,16 @@ export default function Polling() {
         body: JSON.stringify(polldata),
       });
       const data = await response.json();
-      console.log(data);
+      if (response.ok) {
+        createToast(
+          "Your response has been recorded",
+          "Redirecting to submission...",
+        );
+      } else {
+        createToast("Client Side Error", data.error);
+      }
     } catch (err) {
-      console.log(err);
+      createToast("Server Error", "Oops! Something went wrong");
     }
   }
 
