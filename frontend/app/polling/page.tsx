@@ -6,6 +6,7 @@ import Help from "@/components/help";
 import Leaderboard from "@/components/leaderboard";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -35,6 +36,7 @@ export function createToast(title: string, message: string) {
   );
 }
 export default function Polling() {
+  const router = useRouter();
   //All the possible choices that users have
   const choices: keyValue[] = [
     { key: 0, value: "Fintech" },
@@ -124,6 +126,9 @@ export default function Polling() {
           "Your response has been recorded",
           "Redirecting to submission...",
         );
+        setTimeout(() => {
+          router.push("/submission");
+        }, 800);
       } else {
         createToast("Client Side Error", data.error);
       }

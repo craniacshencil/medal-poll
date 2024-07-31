@@ -10,6 +10,25 @@ import (
 	"database/sql"
 )
 
+const getMedals = `-- name: GetMedals :one
+SELECT gold, silver, bronze 
+FROM summary 
+WHERE username=$1
+`
+
+type GetMedalsRow struct {
+	Gold   sql.NullString
+	Silver sql.NullString
+	Bronze sql.NullString
+}
+
+func (q *Queries) GetMedals(ctx context.Context, username string) (GetMedalsRow, error) {
+	row := q.db.QueryRowContext(ctx, getMedals, username)
+	var i GetMedalsRow
+	err := row.Scan(&i.Gold, &i.Silver, &i.Bronze)
+	return i, err
+}
+
 const getUser = `-- name: GetUser :one
 SELECT username, password, responded
 FROM summary 
