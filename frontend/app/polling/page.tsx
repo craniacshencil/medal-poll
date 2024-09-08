@@ -5,7 +5,7 @@ import { useState } from "react";
 import Help from "@/components/help";
 import Leaderboard from "@/components/leaderboard";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { createToast } from "@/components/createToast";
 import { useRouter } from "next/navigation";
 const inter = Inter({
   subsets: ["latin"],
@@ -27,14 +27,6 @@ interface pollData {
   medals: keyValue[];
 }
 
-export function createToast(title: string, message: string) {
-  toast(
-    <div className={inter.className + "px-4"}>
-      <strong className="text-base">{title}</strong>
-      <p>{message}</p>
-    </div>,
-  );
-}
 export default function Polling() {
   const router = useRouter();
   //All the possible choices that users have

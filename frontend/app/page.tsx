@@ -24,15 +24,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useState } from "react";
-import { toast } from "sonner";
-import { Inter } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { storeCredentials } from "./actions";
-import { createToast } from "./polling/page";
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-});
+import { createToast } from "@/components/createToast";
 
 export interface FormData {
   username: string | undefined;

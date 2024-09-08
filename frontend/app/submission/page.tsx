@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { createToast } from "../polling/page";
+import { createToast } from "@/components/createToast";
 import { useState } from "react";
 
 interface Medals {
